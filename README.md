@@ -1,82 +1,84 @@
-# Express TypeScript Server 🚀
+# Express TypeScript API
 
-A robust, production-ready Node.js server setup powered by Express and TypeScript. Designed for scalability, clean architecture, and an exceptional developer experience out of the box.
+A small, production-ready Express + TypeScript starter with file-system based routing — like Next.js's App Router, built from scratch with plain Express (no Next.js).
 
-## ✨ Key Features
+## Stack
 
-- **Robust Foundation**: Built with Express v5 and compiled with TypeScript v6.
-- **Exceptional DX**: Instant hot-reloading with `nodemon` and `ts-node`.
-- **Clean Imports**: Fully configured absolute path aliasing via `tsconfig-paths` & `tsc-alias`.
-- **Production Ready**: Optimized multi-step build process separating source and distributable code.
+Express 5 · TypeScript (strict) · Zod for env validation · Helmet, CORS & rate limiting for security.
 
-## 🛠️ Prerequisites
+## Project structure
 
-Ensure you have the following installed on your system:
-- **Node.js** (v18.x or newer is recommended)
+```
+src/
+├── app/                        # ROUTES ONLY — the folder structure IS the URL
+│   ├── route.ts                #   -> GET /
+│   └── api/
+│       ├── health/
+│       │   └── route.ts        #   -> GET /api/health
+│       └── users/
+│           └── [id]/
+│               └── route.ts    #   -> GET/DELETE /api/users/:id
+│
+├── lib/                        # app infrastructure (not routes)
+│   ├── config.ts               #   validates .env with zod, exports typed config
+│   ├── logger.ts                #   tiny logger (info/warn/error)
+│   ├── errors.ts                 #   ApiError class + 404 handler + error handler
+│   ├── load-routes.ts             #   scans app/ and auto-registers every route.ts
+│   └── create-app.ts               #   builds the Express app (middleware + routes)
+│
+└── server.ts                        # entry point — starts the HTTP server
+```
 
-## 🚀 Getting Started
+`app/` and `lib/` are kept strictly separate: `app/` is *only* URL routes (mirrors Next.js), everything else the app needs lives in `lib/`.
 
-Follow these steps to get your development environment set up and running locally.
+## File-based routing
 
-### 1. Install Dependencies
+Routes aren't registered by hand. On startup, `lib/load-routes.ts` walks `src/app/`, and **the folder path becomes the URL**:
 
-Install all the required packages to run the project.
+| File                                  | Route              |
+| -------------------------------------- | ------------------- |
+| `src/app/route.ts`                      | `/`                 |
+| `src/app/api/health/route.ts`           | `/api/health`       |
+| `src/app/api/users/[id]/route.ts`       | `/api/users/:id`    |
+
+A folder named `[id]` automatically becomes an Express `:id` param. Inside each `route.ts`, export a function named after the HTTP method it handles:
+
+```ts
+// src/app/api/health/route.ts
+import type { Request, Response } from 'express';
+
+export function GET(req: Request, res: Response) {
+  res.json({ status: 'ok' });
+}
+```
+
+**To add a new route:** create a folder under `src/app/` with a `route.ts` inside it. No import to add, no router to update — restart `npm run dev` and it's live.
+
+## Getting started
 
 ```bash
 npm install
+cp .env.example .env
+npm run dev                # http://localhost:4000
 ```
 
-### 2. Run Development Server
+- `GET /` → `{"success":true,"message":"Hello, World!"}`
+- `GET /api/health` → `{"success":true,"status":"ok","uptime":...}`
+- `GET /api/users/42` → `{"success":true,"message":"Fetched user 42"}`
 
-Start up the development server. This mode features hot-reloading, meaning the server will automatically restart whenever you save changes to your files.
+## Scripts
 
-```bash
-npm run dev
-```
+| Command            | What it does                    |
+| ------------------- | -------------------------------- |
+| `npm run dev`        | Run with hot-reload (`tsx`)      |
+| `npm run build`      | Type-check and compile to `dist/` |
+| `npm start`          | Run the compiled build           |
+| `npm run typecheck`  | Type-check only, no output       |
 
-### 3. Build for Production
+## Adding a database later
 
-Compile your TypeScript codebase down to optimized JavaScript code ready for deployment.
+This starter ships without a database. To add one (MongoDB, Postgres, etc.):
 
-```bash
-npm run build
-```
-
-The compiled output will be securely generated inside a root-level `dist/` directory.
-
-### 4. Start Production Server
-
-Start the compiled JavaScript application. Ensure you have compiled the code using `npm run build` beforehand!
-
-```bash
-npm run start
-```
-
-## 📜 Available Scripts
-
-Here is a summary of the npm scripts defined within `package.json`:
-
-- `npm run dev` - Initializes the development server.
-- `npm run build` - Initiates the TypeScript compiler & processes path aliases.
-- `npm run start` - Executes the compiled application from `/dist`.
-- `npm run test` - Placeholder command for initializing a test runner.
-
-## 📁 Project Structure
-
-```text
-├── src/                # Contains all raw TypeScript source files
-│   └── index.ts        # Primary execution entry point
-├── dist/               # Production-ready compiled JavaScript
-├── package.json        # Dependencies & executable project scripts
-└── tsconfig.json       # TypeScript compiler options
-```
-
-## 🥞 Tech Stack
-
-- **[Express.js](https://expressjs.com/)** - Core web application framework.
-- **[TypeScript](https://www.typescriptlang.org/)** - Static type-checking and modern JavaScript features.
-- **[Nodemon](https://nodemon.io/)** - Utility monitor that automatically restarts the server.
-
----
-
-*This setup is kept intentionally lean while enforcing strict, reliable types.*
+1. Add a `lib/database.ts` with connect/disconnect functions.
+2. Call `connectDatabase()` at the top of `start()` in `server.ts`.
+3. Import your models directly inside the relevant `route.ts` files under `app/`.
