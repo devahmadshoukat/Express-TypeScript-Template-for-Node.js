@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "Production-ready Express + TypeScript + MongoDB API starter",
   "type": "module",
-  "engines": { "node": ">=20.0.0" },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "rimraf dist && tsc",
+    "build": "npm run routes:generate && rimraf dist && tsc",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit"
   },
