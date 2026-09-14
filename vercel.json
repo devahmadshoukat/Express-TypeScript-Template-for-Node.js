@@ -1,13 +1,5 @@
 {
     "version": 2,
     "buildCommand": "npm run routes:generate && npm run build",
-    "outputDirectory": "dist",
-    "functions": {
-        "dist/server.js": {
-            "runtime": "node20.18.0"
-        }
-    },
-    "env": {
-        "NODE_ENV": "production"
-    }
+    "outputDirectory": "dist"
 }
