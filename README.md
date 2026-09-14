@@ -1,6 +1,6 @@
 # Express TypeScript Template
 
-**Next.js-like file-based routing with Express backend** 🚀
+**Next.js-like file-based routing with Express backend - 100% TypeScript**
 
 ## Features
 
@@ -11,6 +11,7 @@
 ✅ **Error handling** - Centralized error management
 ✅ **Vercel ready** - Deploy with one click
 ✅ **Minimal** - Only essential dependencies
+✅ **100% TypeScript** - Zero JavaScript in source
 
 ## Quick Start
 
@@ -49,6 +50,9 @@ src/
 │   └── index.ts                  # TypeScript types
 ├── config.ts                      # Environment config
 └── server.ts                      # Express setup
+
+scripts/
+└── generate-routes.ts            # Route generation (TypeScript)
 ```
 
 ## How It Works
@@ -59,13 +63,13 @@ Create `src/app/posts/route.ts`:
 
 ```typescript
 import type { Request, Response } from 'express';
-import { asyncHandler } from '@/utils/async-handler.js';
+import { asyncHandler } from '@/utils/async-handler';
 
-export const GET = asyncHandler(async (_req: Request, res: Response) => {
+export const GET = asyncHandler(async (_req: Request, res: Response): Promise<void> => {
   res.json({ success: true, data: [] });
 });
 
-export const POST = asyncHandler(async (req: Request, res: Response) => {
+export const POST = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   res.status(201).json({ success: true, data: req.body });
 });
 ```
@@ -77,7 +81,7 @@ export const POST = asyncHandler(async (req: Request, res: Response) => {
 Create `src/app/posts/[id]/route.ts`:
 
 ```typescript
-export const GET = asyncHandler(async (req: Request, res: Response) => {
+export const GET = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const postId = req.params.id;
   res.json({ success: true, data: { id: postId } });
 });
@@ -89,10 +93,10 @@ export const GET = asyncHandler(async (req: Request, res: Response) => {
 
 ```typescript
 // Instead of:
-import { asyncHandler } from '../../../utils/async-handler.js';
+import { asyncHandler } from '../../../utils/async-handler';
 
 // Use:
-import { asyncHandler } from '@/utils/async-handler.js';
+import { asyncHandler } from '@/utils/async-handler';
 ```
 
 ## Available HTTP Methods
@@ -118,14 +122,14 @@ GET /api/users
 # Create user
 POST /api/users
 Content-Type: application/json
-{"name": "John", "email": "john@example.com"}
+{\"name\": \"John\", \"email\": \"john@example.com\"}
 
 # Get user
 GET /api/users/1
 
 # Update user
 PUT /api/users/1
-{"name": "Jane"}
+{\"name\": \"Jane\"}
 
 # Delete user
 DELETE /api/users/1
@@ -142,7 +146,7 @@ GET /api/health
 Throw errors in your routes:
 
 ```typescript
-import { ApiError } from '@/middleware/errors.js';
+import { ApiError } from '@/middleware/errors';
 
 if (!user) {
   throw new ApiError(404, 'User not found', 'USER_NOT_FOUND');
