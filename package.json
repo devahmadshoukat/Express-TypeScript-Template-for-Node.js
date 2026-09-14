@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "routes:generate": "node scripts/generate-routes.mjs",
     "build": "npm run routes:generate && rimraf dist && tsc",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit"
