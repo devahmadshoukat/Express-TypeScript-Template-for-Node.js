@@ -1,84 +1,81 @@
-# Express TypeScript API
+# Express TypeScript Template
 
-A small, production-ready Express + TypeScript starter with file-system based routing — like Next.js's App Router, built from scratch with plain Express (no Next.js).
+A minimal, production-ready Express + TypeScript starter for building APIs.
 
-## Stack
+## Features
 
-Express 5 · TypeScript (strict) · Zod for env validation · Helmet, CORS & rate limiting for security.
+- ✅ Express 5 + TypeScript (strict mode)
+- ✅ Environment validation with Zod
+- ✅ Security: Helmet + CORS
+- ✅ Error handling
+- ✅ Vercel deployment ready
+- ✅ Minimal dependencies
 
-## Project structure
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Copy environment file
+cp .env.example .env
+
+# Development
+npm run dev
+
+# Build
+npm run build
+
+# Production
+npm start
+```
+
+## Project Structure
 
 ```
 src/
-├── app/                        # ROUTES ONLY — the folder structure IS the URL
-│   ├── route.ts                #   -> GET /
-│   └── api/
-│       ├── health/
-│       │   └── route.ts        #   -> GET /api/health
-│       └── users/
-│           └── [id]/
-│               └── route.ts    #   -> GET/DELETE /api/users/:id
-│
-├── lib/                        # app infrastructure (not routes)
-│   ├── config.ts               #   validates .env with zod, exports typed config
-│   ├── logger.ts                #   tiny logger (info/warn/error)
-│   ├── errors.ts                 #   ApiError class + 404 handler + error handler
-│   ├── load-routes.ts             #   scans app/ and auto-registers every route.ts
-│   └── create-app.ts               #   builds the Express app (middleware + routes)
-│
-└── server.ts                        # entry point — starts the HTTP server
+├── config.ts              # Environment configuration
+├── server.ts              # Express app setup
+├── routes/
+│   └── index.ts          # API routes
+├── middleware/
+│   └── errors.ts         # Error handling
+└── utils/
+    └── logger.ts         # Logging utility
 ```
 
-`app/` and `lib/` are kept strictly separate: `app/` is *only* URL routes (mirrors Next.js), everything else the app needs lives in `lib/`.
+## Available Endpoints
 
-## File-based routing
+- `GET /api` - Welcome message
+- `GET /api/health` - Health check
 
-Routes aren't registered by hand. On startup, `lib/load-routes.ts` walks `src/app/`, and **the folder path becomes the URL**:
+## Adding New Routes
 
-| File                                  | Route              |
-| -------------------------------------- | ------------------- |
-| `src/app/route.ts`                      | `/`                 |
-| `src/app/api/health/route.ts`           | `/api/health`       |
-| `src/app/api/users/[id]/route.ts`       | `/api/users/:id`    |
+Edit `src/routes/index.ts` and add your routes:
 
-A folder named `[id]` automatically becomes an Express `:id` param. Inside each `route.ts`, export a function named after the HTTP method it handles:
-
-```ts
-// src/app/api/health/route.ts
-import type { Request, Response } from 'express';
-
-export function GET(req: Request, res: Response) {
-  res.json({ status: 'ok' });
-}
+```typescript
+router.get('/users', (req, res) => {
+  res.json({ message: 'Users endpoint' });
+});
 ```
 
-**To add a new route:** create a folder under `src/app/` with a `route.ts` inside it. No import to add, no router to update — restart `npm run dev` and it's live.
+## Environment Variables
 
-## Getting started
+See `.env.example` for available options.
+
+## Deployment
+
+### Vercel
 
 ```bash
-npm install
-cp .env.example .env
-npm run dev                # http://localhost:4000
+git push origin main
 ```
 
-- `GET /` → `{"success":true,"message":"Hello, World!"}`
-- `GET /api/health` → `{"success":true,"status":"ok","uptime":...}`
-- `GET /api/users/42` → `{"success":true,"message":"Fetched user 42"}`
+Vercel will automatically:
+1. Install dependencies
+2. Run `npm run build`
+3. Deploy to production
 
-## Scripts
+## License
 
-| Command            | What it does                    |
-| ------------------- | -------------------------------- |
-| `npm run dev`        | Run with hot-reload (`tsx`)      |
-| `npm run build`      | Type-check and compile to `dist/` |
-| `npm start`          | Run the compiled build           |
-| `npm run typecheck`  | Type-check only, no output       |
-
-## Adding a database later
-
-This starter ships without a database. To add one (MongoDB, Postgres, etc.):
-
-1. Add a `lib/database.ts` with connect/disconnect functions.
-2. Call `connectDatabase()` at the top of `start()` in `server.ts`.
-3. Import your models directly inside the relevant `route.ts` files under `app/`.
+MIT

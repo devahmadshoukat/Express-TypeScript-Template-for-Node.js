@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npm run routes:generate && npm run build",
-  "outputDirectory": "dist",
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }
