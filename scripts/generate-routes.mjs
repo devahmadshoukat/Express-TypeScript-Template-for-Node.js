@@ -1,9 +1,6 @@
 #!/usr/bin/env node
-
-/**
- * This file should be deleted - use scripts/generate-routes.ts instead
- * All code is now 100% TypeScript
- */
-
-console.error('ERROR: This file is deprecated. Use: npm run routes:generate');
+// DO NOT USE - All code is now 100% TypeScript
+// Use: npm run routes:generate (which runs scripts/generate-routes.ts)
+console.error('❌ Error: scripts/generate-routes.mjs is deprecated');
+console.error('✅ Use: npm run routes:generate');
 process.exit(1);
