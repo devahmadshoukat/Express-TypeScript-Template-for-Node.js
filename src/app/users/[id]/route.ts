@@ -23,7 +23,7 @@ const users: User[] = [
 
 // GET /api/users/:id - Get user by ID
 export const GET = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const userId = parseInt(req.params.id, 10);
+  const userId = parseInt(String(req.params.id), 10);
   const user = users.find(u => u.id === userId);
 
   if (!user) {
@@ -38,7 +38,7 @@ export const GET = asyncHandler(async (req: Request, res: Response): Promise<voi
 
 // PUT /api/users/:id - Update user
 export const PUT = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const userId = parseInt(req.params.id, 10);
+  const userId = parseInt(String(req.params.id), 10);
   const user = users.find(u => u.id === userId);
 
   if (!user) {
@@ -59,7 +59,7 @@ export const PUT = asyncHandler(async (req: Request, res: Response): Promise<voi
 
 // DELETE /api/users/:id - Delete user
 export const DELETE = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const userId = parseInt(req.params.id, 10);
+  const userId = parseInt(String(req.params.id), 10);
   const index = users.findIndex(u => u.id === userId);
 
   if (index === -1) {
