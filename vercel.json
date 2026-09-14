@@ -4,7 +4,7 @@
     "outputDirectory": "dist",
     "functions": {
         "dist/server.js": {
-            "runtime": "nodejs20.x"
+            "runtime": "node20.x"
         }
     },
     "env": {
