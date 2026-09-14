@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
-import { asyncHandler } from '@/utils/async-handler.js';
+import { asyncHandler } from '@/utils/async-handler';
 
-export const GET = asyncHandler(async (_req: Request, res: Response) => {
+export const GET = asyncHandler(async (_req: Request, res: Response): Promise<void> => {
   res.json({
     success: true,
     status: 'healthy',

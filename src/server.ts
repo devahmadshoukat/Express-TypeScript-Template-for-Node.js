@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { config } from '@/config.js';
-import { errorHandler, notFound } from '@/middleware/errors.js';
-import { logger } from '@/utils/logger.js';
-import { buildRoutes } from '@/lib/routes.generated.js';
+import { config } from '@/config';
+import { errorHandler, notFound } from '@/middleware/errors';
+import { logger } from '@/utils/logger';
+import { buildRoutes } from '@/lib/routes.generated';
 
 const app = express();
 
@@ -31,7 +31,7 @@ if (!process.env.VERCEL) {
     logger.info(`📚 API docs at http://localhost:${config.port}/api`);
   });
 
-  const shutdown = () => {
+  const shutdown = (): void => {
     logger.info('Shutting down...');
     server.close(() => process.exit(0));
   };

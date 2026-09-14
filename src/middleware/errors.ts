@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { logger } from '@/utils/logger.js';
+import { logger } from '@/utils/logger';
 
 export class ApiError extends Error {
   constructor(
@@ -12,8 +12,14 @@ export class ApiError extends Error {
   }
 }
 
-export function notFound(req: Request, _res: Response, next: NextFunction) {
-  next(new ApiError(404, `Route not found: ${req.method} ${req.originalUrl}`, 'NOT_FOUND'));
+export function notFound(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+): void {
+  next(
+    new ApiError(404, `Route not found: ${req.method} ${req.originalUrl}`, 'NOT_FOUND'),
+  );
 }
 
 export function errorHandler(
@@ -21,7 +27,7 @@ export function errorHandler(
   _req: Request,
   res: Response,
   _next: NextFunction,
-) {
+): void {
   const isApiError = err instanceof ApiError;
   const statusCode = isApiError ? err.statusCode : 500;
   const message = isApiError ? err.message : 'Internal Server Error';

@@ -14,7 +14,14 @@ if (!parsed.success) {
   process.exit(1);
 }
 
-export const config = {
+interface Config {
+  env: 'development' | 'production';
+  isDev: boolean;
+  port: number;
+  corsOrigin: string;
+}
+
+export const config: Config = {
   env: parsed.data.NODE_ENV,
   isDev: parsed.data.NODE_ENV === 'development',
   port: parsed.data.PORT,
