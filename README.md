@@ -1,27 +1,25 @@
 # Express TypeScript Template
 
-A minimal, production-ready Express + TypeScript starter for building APIs.
+**Next.js-like file-based routing with Express backend** 🚀
 
 ## Features
 
-- ✅ Express 5 + TypeScript (strict mode)
-- ✅ Environment validation with Zod
-- ✅ Security: Helmet + CORS
-- ✅ Error handling
-- ✅ Vercel deployment ready
-- ✅ Minimal dependencies
+✅ **File-based routing** - Folder structure = URL routes (like Next.js)
+✅ **TypeScript strict mode** - Full type safety
+✅ **Path aliases** - `@/` for clean imports
+✅ **Auto-generated routes** - Just create files, no manual registration
+✅ **Error handling** - Centralized error management
+✅ **Vercel ready** - Deploy with one click
+✅ **Minimal** - Only essential dependencies
 
 ## Quick Start
 
 ```bash
-# Install dependencies
+# Install
 npm install
 
-# Copy environment file
-cp .env.example .env
-
 # Development
-npm run dev
+npm run dev        # http://localhost:4000
 
 # Build
 npm run build
@@ -34,34 +32,132 @@ npm start
 
 ```
 src/
-├── config.ts              # Environment configuration
-├── server.ts              # Express app setup
-├── routes/
-│   └── index.ts          # API routes
+├── app/                          # Routes (folder = URL path)
+│   ├── route.ts                  # GET /api
+│   ├── health/
+│   │   └── route.ts              # GET /api/health
+│   └── users/
+│       ├── route.ts              # GET/POST /api/users
+│       └── [id]/
+│           └── route.ts          # GET/PUT/DELETE /api/users/:id
 ├── middleware/
-│   └── errors.ts         # Error handling
-└── utils/
-    └── logger.ts         # Logging utility
+│   └── errors.ts                 # Error handling
+├── utils/
+│   ├── logger.ts                 # Logging
+│   └── async-handler.ts          # Async error handling
+├── types/
+│   └── index.ts                  # TypeScript types
+├── config.ts                      # Environment config
+└── server.ts                      # Express setup
 ```
 
-## Available Endpoints
+## How It Works
 
-- `GET /api` - Welcome message
-- `GET /api/health` - Health check
+### 1. Create Route File
 
-## Adding New Routes
-
-Edit `src/routes/index.ts` and add your routes:
+Create `src/app/posts/route.ts`:
 
 ```typescript
-router.get('/users', (req, res) => {
-  res.json({ message: 'Users endpoint' });
+import type { Request, Response } from 'express';
+import { asyncHandler } from '@/utils/async-handler.js';
+
+export const GET = asyncHandler(async (_req: Request, res: Response) => {
+  res.json({ success: true, data: [] });
 });
+
+export const POST = asyncHandler(async (req: Request, res: Response) => {
+  res.status(201).json({ success: true, data: req.body });
+});
+```
+
+**Automatically creates:** `GET /api/posts` and `POST /api/posts`
+
+### 2. Dynamic Routes
+
+Create `src/app/posts/[id]/route.ts`:
+
+```typescript
+export const GET = asyncHandler(async (req: Request, res: Response) => {
+  const postId = req.params.id;
+  res.json({ success: true, data: { id: postId } });
+});
+```
+
+**Automatically creates:** `GET /api/posts/:id`
+
+### 3. Use Path Aliases
+
+```typescript
+// Instead of:
+import { asyncHandler } from '../../../utils/async-handler.js';
+
+// Use:
+import { asyncHandler } from '@/utils/async-handler.js';
+```
+
+## Available HTTP Methods
+
+Export any of these functions in your route files:
+
+```typescript
+export const GET = asyncHandler(async (req, res) => { ... });
+export const POST = asyncHandler(async (req, res) => { ... });
+export const PUT = asyncHandler(async (req, res) => { ... });
+export const PATCH = asyncHandler(async (req, res) => { ... });
+export const DELETE = asyncHandler(async (req, res) => { ... });
+```
+
+## API Endpoints
+
+### Users
+
+```bash
+# List users
+GET /api/users
+
+# Create user
+POST /api/users
+Content-Type: application/json
+{"name": "John", "email": "john@example.com"}
+
+# Get user
+GET /api/users/1
+
+# Update user
+PUT /api/users/1
+{"name": "Jane"}
+
+# Delete user
+DELETE /api/users/1
+```
+
+### Health
+
+```bash
+GET /api/health
+```
+
+## Error Handling
+
+Throw errors in your routes:
+
+```typescript
+import { ApiError } from '@/middleware/errors.js';
+
+if (!user) {
+  throw new ApiError(404, 'User not found', 'USER_NOT_FOUND');
+}
 ```
 
 ## Environment Variables
 
-See `.env.example` for available options.
+Create `.env`:
+
+```
+NODE_ENV=development
+PORT=4000
+CORS_ORIGIN=*
+```
 
 ## Deployment
 
@@ -71,10 +167,25 @@ See `.env.example` for available options.
 git push origin main
 ```
 
-Vercel will automatically:
-1. Install dependencies
-2. Run `npm run build`
-3. Deploy to production
+Vercel automatically:
+1. Generates routes
+2. Builds TypeScript
+3. Deploys to production
+
+### Docker
+
+```bash
+docker build -t api .
+docker run -p 4000:4000 api
+```
+
+## Next Steps
+
+- Add a database (MongoDB, Postgres, etc.)
+- Add authentication middleware
+- Add validation schemas (Zod)
+- Add testing (Jest, Vitest)
+- Add more routes following the same pattern
 
 ## License
 

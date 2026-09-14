@@ -1,16 +1,17 @@
 {
   "name": "express-typescript-template",
   "version": "1.0.0",
-  "description": "Minimal production-ready Express + TypeScript starter",
+  "description": "Next.js-like file-based routing with Express backend",
   "type": "module",
   "engines": {
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "dev": "node scripts/generate-routes.mjs && tsx watch src/server.ts",
+    "build": "node scripts/generate-routes.mjs && tsc",
     "start": "node dist/server.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "routes:generate": "node scripts/generate-routes.mjs"
   },
   "dependencies": {
     "cors": "^2.8.5",

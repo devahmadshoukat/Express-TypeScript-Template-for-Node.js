@@ -10,7 +10,16 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/app": ["src/app"],
+      "@/lib": ["src/lib"],
+      "@/middleware": ["src/middleware"],
+      "@/utils": ["src/utils"],
+      "@/types": ["src/types"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

@@ -4,8 +4,8 @@ import { asyncHandler } from '@/utils/async-handler.js';
 export const GET = asyncHandler(async (_req: Request, res: Response) => {
   res.json({
     success: true,
-    message: 'Welcome to Express TypeScript API',
-    version: '1.0.0',
-    docs: 'https://github.com/devahmadshoukat/Express-TypeScript-Template-for-Node.js',
+    status: 'healthy',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
   });
 });
